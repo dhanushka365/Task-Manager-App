@@ -2,6 +2,9 @@ package com.taskmanager.backend.entity;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -9,6 +12,9 @@ import org.springframework.data.mongodb.core.mapping.Document;
 import java.time.LocalDateTime;
 
 @Document(collection = "users")
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class User {
     @Id
     private String id;
@@ -24,26 +30,13 @@ public class User {
 
     private LocalDateTime createdAt;
 
-    public User() {
+    public User(String username, String password) {
+        this.username = username;
+        this.password = password;
         this.createdAt = LocalDateTime.now();
     }
 
-    public User(String username, String password) {
-        this();
-        this.username = username;
-        this.password = password;
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt != null ? createdAt : LocalDateTime.now();
     }
-
-    public String getId() { return id; }
-    public void setId(String id) { this.id = id; }
-
-    public String getUsername() { return username; }
-    public void setUsername(String username) { this.username = username; }
-
-    public String getPassword() { return password; }
-    public void setPassword(String password) { this.password = password; }
-
-    public LocalDateTime getCreatedAt() { return createdAt; }
-    public void setCreatedAt(LocalDateTime createdAt) { this.createdAt = createdAt; }
 }
-
