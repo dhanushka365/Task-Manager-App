@@ -1,0 +1,89 @@
+<div class="auth-container">
+  <div class="container">
+    <div class="row justify-content-center">
+      <div class="col-md-6 col-lg-4">
+        <div class="auth-card fade-in">
+          <div class="text-center mb-4">
+            <h2 class="card-title">Welcome Back</h2>
+            <p class="card-subtitle">Sign in to your account</p>
+          </div>
+
+          <!-- Success Message -->
+          <div *ngIf="successMessage" class="alert alert-success" role="alert">
+            <i class="bi bi-check-circle-fill me-2"></i>
+            {{ successMessage }}
+          </div>
+
+          <!-- Error Message -->
+          <div *ngIf="errorMessage" class="alert alert-danger" role="alert">
+            <i class="bi bi-exclamation-triangle-fill me-2"></i>
+            {{ errorMessage }}
+          </div>
+
+          <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" novalidate>
+            <!-- Username Field -->
+            <div class="mb-3">
+              <label for="username" class="form-label">Username</label>
+              <input
+                type="text"
+                id="username"
+                class="form-control"
+                [class.is-invalid]="hasError('username')"
+                formControlName="username"
+                placeholder="Enter your username"
+                autocomplete="username"
+              />
+              <div *ngIf="hasError('username')" class="invalid-feedback">
+                {{ getErrorMessage('username') }}
+              </div>
+            </div>
+
+            <!-- Password Field -->
+            <div class="mb-4">
+              <label for="password" class="form-label">Password</label>
+              <input
+                type="password"
+                id="password"
+                class="form-control"
+                [class.is-invalid]="hasError('password')"
+                formControlName="password"
+                placeholder="Enter your password"
+                autocomplete="current-password"
+              />
+              <div *ngIf="hasError('password')" class="invalid-feedback">
+                {{ getErrorMessage('password') }}
+              </div>
+            </div>
+
+            <!-- Submit Button -->
+            <button
+              type="submit"
+              class="btn btn-primary w-100 mb-3"
+              [disabled]="isLoading"
+            >
+              <span *ngIf="isLoading" class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+              {{ isLoading ? 'Signing in...' : 'Sign In' }}
+            </button>
+          </form>
+
+          <!-- Register Link -->
+          <div class="text-center">
+            <p class="mb-0">
+              Don't have an account? 
+              <a routerLink="/register" class="text-decoration-none">Sign up here</a>
+            </p>
+          </div>
+
+          <!-- Demo Credentials (for testing) -->
+          <div class="mt-4 p-3 bg-light rounded">
+            <small class="text-muted">
+              <strong>Demo Credentials:</strong><br>
+              Username: demo<br>
+              Password: password
+            </small>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
