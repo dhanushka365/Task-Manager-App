@@ -17,7 +17,6 @@ import java.util.List;
 @RestController
 @RequestMapping("/tasks")
 @Tag(name = "Tasks", description = "Task management APIs")
-@SecurityRequirement(name = "bearerAuth")
 @CrossOrigin(origins = {"http://localhost:3000", "http://localhost:3001"})
 public class TaskController {
 
@@ -26,6 +25,7 @@ public class TaskController {
 
     @GetMapping
     @Operation(summary = "Get all tasks", description = "Get all tasks for authenticated user")
+    @SecurityRequirement(name = "Bearer Authentication")
     public ResponseEntity<List<TaskDto>> getAllTasks() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String username = authentication.getName();
@@ -35,6 +35,7 @@ public class TaskController {
 
     @GetMapping("/{id}")
     @Operation(summary = "Get task by ID", description = "Get a specific task by ID")
+    @SecurityRequirement(name = "Bearer Authentication")
     public ResponseEntity<TaskDto> getTaskById(@PathVariable String id) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String username = authentication.getName();
@@ -48,6 +49,7 @@ public class TaskController {
 
     @PostMapping
     @Operation(summary = "Create task", description = "Create a new task")
+    @SecurityRequirement(name = "Bearer Authentication")
     public ResponseEntity<TaskDto> createTask(@Valid @RequestBody TaskDto taskDto) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String username = authentication.getName();
@@ -57,6 +59,7 @@ public class TaskController {
 
     @PutMapping("/{id}")
     @Operation(summary = "Update task", description = "Update an existing task")
+    @SecurityRequirement(name = "Bearer Authentication")
     public ResponseEntity<TaskDto> updateTask(@PathVariable String id, @Valid @RequestBody TaskDto taskDto) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String username = authentication.getName();
@@ -70,6 +73,7 @@ public class TaskController {
 
     @DeleteMapping("/{id}")
     @Operation(summary = "Delete task", description = "Delete a task")
+    @SecurityRequirement(name = "Bearer Authentication")
     public ResponseEntity<Void> deleteTask(@PathVariable String id) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String username = authentication.getName();
@@ -83,6 +87,7 @@ public class TaskController {
 
     @GetMapping("/status/{status}")
     @Operation(summary = "Get tasks by status", description = "Get tasks filtered by status")
+    @SecurityRequirement(name = "Bearer Authentication")
     public ResponseEntity<List<TaskDto>> getTasksByStatus(@PathVariable String status) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String username = authentication.getName();
