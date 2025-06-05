@@ -46,8 +46,17 @@ public class TaskService {
         task.setDescription(taskDto.getDescription());
         task.setStatus(taskDto.getStatus() != null ? taskDto.getStatus() : "TO_DO");
         task.setUserId(user.getId());
+        
+        // Ensure dates are set
+        LocalDateTime now = LocalDateTime.now();
+        task.setCreatedAt(now);
+        task.setUpdatedAt(now);
+        
+        System.out.println("Creating task with createdAt: " + now);
 
         Task savedTask = taskRepository.save(task);
+        System.out.println("Saved task with createdAt: " + savedTask.getCreatedAt());
+        
         return convertToDto(savedTask);
     }
 
@@ -95,6 +104,12 @@ public class TaskService {
         dto.setStatus(task.getStatus());
         dto.setCreatedAt(task.getCreatedAt());
         dto.setUpdatedAt(task.getUpdatedAt());
+        
+        // Debug logging
+        System.out.println("Converting task: " + task.getTitle());
+        System.out.println("CreatedAt: " + task.getCreatedAt());
+        System.out.println("DTO CreatedAt: " + dto.getCreatedAt());
+        
         return dto;
     }
 }
