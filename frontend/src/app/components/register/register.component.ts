@@ -88,19 +88,38 @@ export class RegisterComponent implements OnInit {
         },
         error: (error) => {
           this.isLoading = false;
+          console.log('Registration error:', error);
           
-          // Handle specific error messages
-          const errorMsg = error.message || 'Registration failed. Please try again.';
-          
-          if (errorMsg.toLowerCase().includes('username already exists') || 
-              errorMsg.toLowerCase().includes('already exists')) {
-            this.errorMessage = `Username "${registerData.username}" is already taken. Please choose a different username.`;
-          } else if (errorMsg.toLowerCase().includes('username')) {
-            this.errorMessage = 'Invalid username format. Please check your username and try again.';
-          } else if (errorMsg.toLowerCase().includes('password')) {
-            this.errorMessage = 'Password does not meet requirements. Please check your password and try again.';
+          // Handle structured validation errors from backend
+          if (error.error && error.error.errors) {
+            // Backend validation errors - structured response
+            const validationErrors = error.error.errors;
+            const errorMessages = [];
+            
+            if (validationErrors.username) {
+              errorMessages.push(`Username: ${validationErrors.username}`);
+            }
+            if (validationErrors.password) {
+              errorMessages.push(`Password: ${validationErrors.password}`);
+            }
+            
+            this.errorMessage = errorMessages.length > 0 
+              ? errorMessages.join('. ') 
+              : 'Validation failed. Please check your input.';
           } else {
-            this.errorMessage = errorMsg;
+            // Simple error message from backend
+            const errorMsg = error.error || error.message || 'Registration failed. Please try again.';
+            
+            if (typeof errorMsg === 'string') {
+              if (errorMsg.toLowerCase().includes('username already exists') || 
+                  errorMsg.toLowerCase().includes('already exists')) {
+                this.errorMessage = `Username "${registerData.username}" is already taken. Please choose a different username.`;
+              } else {
+                this.errorMessage = errorMsg;
+              }
+            } else {
+              this.errorMessage = 'Registration failed. Please try again.';
+            }
           }
         }
       });

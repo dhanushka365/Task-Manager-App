@@ -1,38 +1,11 @@
 // MongoDB initialization script for Task Manager Application
 db = db.getSiblingDB('taskmanager');
 
-// Create users collection with schema validation
-db.createCollection('users', {
-   validator: {
-      $jsonSchema: {
-         bsonType: "object",
-         required: ["username", "password", "createdAt"],
-         properties: {
-            username: {
-               bsonType: "string",
-               description: "must be a string and is required"
-            },
-            password: {
-               bsonType: "string",
-               description: "must be a string and is required"
-            },
-            email: {
-               bsonType: "string",
-               pattern: "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$",
-               description: "must be a valid email format if provided"
-            },
-            createdAt: {
-               bsonType: "date",
-               description: "must be a date and is required"
-            },
-            updatedAt: {
-               bsonType: "date",
-               description: "must be a date if provided"
-            }
-         }
-      }
-   }
-});
+// Create users collection without strict schema validation
+db.createCollection('users');
+
+// Create tasks collection without strict schema validation  
+db.createCollection('tasks');
 
 // Create tasks collection with schema validation
 db.createCollection('tasks', {
