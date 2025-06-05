@@ -1,0 +1,122 @@
+<div class="task-list-container">
+  <!-- Loading Spinner -->
+  <div *ngIf="isLoading" class="text-center py-5">
+    <div class="spinner-border text-primary" role="status">
+      <span class="visually-hidden">Loading...</span>
+    </div>
+    <p class="mt-3 text-muted">Loading tasks...</p>
+  </div>
+
+  <!-- Empty State -->
+  <div *ngIf="!isLoading && tasks.length === 0" class="empty-state text-center py-5">
+    <i class="bi bi-clipboard-x display-1 text-muted"></i>
+    <h4 class="mt-3">No tasks found</h4>
+    <p class="text-muted">Create your first task to get started!</p>
+  </div>
+
+  <!-- Tasks Table -->
+  <div *ngIf="!isLoading && tasks.length > 0" class="table-responsive">
+    <table class="table table-hover">
+      <thead>
+        <tr>
+          <th scope="col">Title</th>
+          <th scope="col">Description</th>
+          <th scope="col">Status</th>
+          <th scope="col">Created</th>
+          <th scope="col">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let task of tasks; trackBy: trackByTaskId" class="fade-in">
+          <td>
+            <strong>{{ task.title }}</strong>
+          </td>
+          <td>
+            <span [title]="task.description" class="description-text">
+              {{ task.description || 'No description' }}
+            </span>
+          </td>
+          <td>
+            <span [class]="'status-badge ' + getStatusClass(task.status)">
+              {{ getStatusText(task.status) }}
+            </span>
+          </td>
+          <td>
+            <small class="text-muted">{{ formatDate(task.createdAt || '') }}</small>
+          </td>
+          <td>
+            <div class="btn-group btn-group-sm" role="group">
+              <button
+                type="button"
+                class="btn btn-outline-info"
+                (click)="onView(task)"
+                title="View task details"
+              >
+                <i class="bi bi-eye"></i>
+              </button>
+              <button
+                type="button"
+                class="btn btn-outline-primary"
+                (click)="onEdit(task)"
+                title="Edit task"
+              >
+                <i class="bi bi-pencil"></i>
+              </button>
+              <button
+                type="button"
+                class="btn btn-outline-danger"
+                (click)="onDelete(task.id!)"
+                title="Delete task"
+              >
+                <i class="bi bi-trash"></i>
+              </button>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Task Cards (Alternative mobile-friendly view) -->
+  <div *ngIf="!isLoading && tasks.length > 0" class="task-cards d-block d-md-none">
+    <div *ngFor="let task of tasks; trackBy: trackByTaskId" class="card task-card mb-3 fade-in">
+      <div class="card-body">
+        <div class="d-flex justify-content-between align-items-start mb-2">
+          <h6 class="card-title mb-0">{{ task.title }}</h6>
+          <span [class]="'status-badge ' + getStatusClass(task.status)">
+            {{ getStatusText(task.status) }}
+          </span>
+        </div>
+        <p class="card-text text-muted small mb-2">
+          {{ task.description || 'No description' }}
+        </p>
+        <div class="d-flex justify-content-between align-items-center">
+          <small class="text-muted">{{ formatDate(task.createdAt || '') }}</small>
+          <div class="btn-group btn-group-sm">
+            <button
+              type="button"
+              class="btn btn-outline-info btn-sm"
+              (click)="onView(task)"
+            >
+              <i class="bi bi-eye"></i>
+            </button>
+            <button
+              type="button"
+              class="btn btn-outline-primary btn-sm"
+              (click)="onEdit(task)"
+            >
+              <i class="bi bi-pencil"></i>
+            </button>
+            <button
+              type="button"
+              class="btn btn-outline-danger btn-sm"
+              (click)="onDelete(task.id!)"
+            >
+              <i class="bi bi-trash"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

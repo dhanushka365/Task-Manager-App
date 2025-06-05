@@ -1,0 +1,161 @@
+<div class="dashboard-container">
+  <!-- Navbar -->
+  <app-navbar 
+    [currentUser]="currentUser"
+    (logout)="onLogout()"
+    (createTask)="onCreateTask()"
+  ></app-navbar>
+
+  <!-- Main Content -->
+  <div class="container-fluid py-4">
+    <!-- Alert Messages -->
+    <div *ngIf="successMessage" class="alert alert-success alert-dismissible fade show" role="alert">
+      <i class="bi bi-check-circle-fill me-2"></i>
+      {{ successMessage }}
+      <button type="button" class="btn-close" (click)="successMessage = ''" aria-label="Close"></button>
+    </div>
+
+    <div *ngIf="errorMessage" class="alert alert-danger alert-dismissible fade show" role="alert">
+      <i class="bi bi-exclamation-triangle-fill me-2"></i>
+      {{ errorMessage }}
+      <button type="button" class="btn-close" (click)="errorMessage = ''" aria-label="Close"></button>
+    </div>
+
+    <!-- Statistics Cards -->
+    <div class="row mb-4">
+      <div class="col-lg-3 col-md-6 mb-3">
+        <div class="stats-card total">
+          <div class="stats-icon">
+            <i class="bi bi-list-task"></i>
+          </div>
+          <div class="stats-content">
+            <h3>{{ totalTasks }}</h3>
+            <p>Total Tasks</p>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-3 col-md-6 mb-3">
+        <div class="stats-card todo">
+          <div class="stats-icon">
+            <i class="bi bi-circle"></i>
+          </div>
+          <div class="stats-content">
+            <h3>{{ todoTasks }}</h3>
+            <p>To Do</p>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-3 col-md-6 mb-3">
+        <div class="stats-card progress">
+          <div class="stats-icon">
+            <i class="bi bi-arrow-clockwise"></i>
+          </div>
+          <div class="stats-content">
+            <h3>{{ inProgressTasks }}</h3>
+            <p>In Progress</p>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-3 col-md-6 mb-3">
+        <div class="stats-card done">
+          <div class="stats-icon">
+            <i class="bi bi-check-circle"></i>
+          </div>
+          <div class="stats-content">
+            <h3>{{ doneTasks }}</h3>
+            <p>Completed</p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Task Management Section -->
+    <div class="row">
+      <div class="col-12">
+        <div class="card task-management-card">
+          <div class="card-header d-flex justify-content-between align-items-center">
+            <h5 class="card-title mb-0">
+              <i class="bi bi-kanban me-2"></i>
+              Task Management
+            </h5>
+            <button 
+              class="btn btn-primary"
+              (click)="onCreateTask()"
+            >
+              <i class="bi bi-plus-circle me-1"></i>
+              New Task
+            </button>
+          </div>
+          <div class="card-body">
+            <!-- Filter Buttons -->
+            <div class="filter-section mb-4">
+              <div class="btn-group" role="group" aria-label="Task filters">
+                <button 
+                  type="button" 
+                  class="btn"
+                  [class.btn-primary]="currentFilter === 'ALL'"
+                  [class.btn-outline-primary]="currentFilter !== 'ALL'"
+                  (click)="applyFilter('ALL')"
+                >
+                  All ({{ totalTasks }})
+                </button>
+                <button 
+                  type="button" 
+                  class="btn"
+                  [class.btn-warning]="currentFilter === 'TO_DO'"
+                  [class.btn-outline-warning]="currentFilter !== 'TO_DO'"
+                  (click)="applyFilter('TO_DO')"
+                >
+                  To Do ({{ todoTasks }})
+                </button>
+                <button 
+                  type="button" 
+                  class="btn"
+                  [class.btn-info]="currentFilter === 'IN_PROGRESS'"
+                  [class.btn-outline-info]="currentFilter !== 'IN_PROGRESS'"
+                  (click)="applyFilter('IN_PROGRESS')"
+                >
+                  In Progress ({{ inProgressTasks }})
+                </button>
+                <button 
+                  type="button" 
+                  class="btn"
+                  [class.btn-success]="currentFilter === 'DONE'"
+                  [class.btn-outline-success]="currentFilter !== 'DONE'"
+                  (click)="applyFilter('DONE')"
+                >
+                  Done ({{ doneTasks }})
+                </button>
+              </div>
+            </div>
+
+            <!-- Task List -->
+            <app-task-list
+              [tasks]="filteredTasks"
+              [isLoading]="isLoading"
+              (editTask)="onEditTask($event)"
+              (viewTask)="onViewTask($event)"
+              (deleteTask)="onDeleteTask($event)"
+            ></app-task-list>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Task Form Modal -->
+  <app-task-form
+    [task]="selectedTask"
+    [isVisible]="showTaskForm"
+    (submitTask)="onTaskFormSubmit($event)"
+    (closeForm)="closeTaskForm()"
+  ></app-task-form>
+
+  <!-- Task Details Modal -->
+  <app-task-details
+    [task]="taskForDetails"
+    [isVisible]="showTaskDetails"
+    (editTask)="onTaskDetailsEdit($event)"
+    (deleteTask)="onTaskDetailsDelete($event)"
+    (closeDetails)="closeTaskDetails()"
+  ></app-task-details>
+</div>

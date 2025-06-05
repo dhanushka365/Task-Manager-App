@@ -1,0 +1,90 @@
+.modal {
+  background: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(5px);
+}
+
+.modal-content {
+  border-radius: 16px;
+  border: none;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+}
+
+.modal-header {
+  border-bottom: 2px solid #f8f9fa;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border-radius: 16px 16px 0 0;
+}
+
+.modal-title {
+  font-weight: 700;
+}
+
+.btn-close {
+  filter: invert(1);
+}
+
+.task-title {
+  color: #2d3748;
+  font-weight: 700;
+  margin-bottom: 1rem;
+}
+
+.task-meta {
+  margin-bottom: 1.5rem;
+}
+
+.status-badge {
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.status-todo {
+  background: #fff3cd;
+  color: #856404;
+}
+
+.status-in-progress {
+  background: #cce7ff;
+  color: #004085;
+}
+
+.status-done {
+  background: #d4edda;
+  color: #155724;
+}
+
+.task-description h6 {
+  color: #495057;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .modal-dialog {
+    margin: 1rem;
+  }
+  
+  .modal-body .row {
+    flex-direction: column;
+  }
+  
+  .metadata-section {
+    margin-top: 1rem;
+  }
+  
+  .modal-footer {
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+  
+  .modal-footer .btn {
+    flex: 1;
+    min-width: 120px;
+  }
+}

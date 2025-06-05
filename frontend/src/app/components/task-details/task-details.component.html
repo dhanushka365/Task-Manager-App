@@ -1,0 +1,111 @@
+<!-- Modal Backdrop -->
+<div 
+  *ngIf="isVisible" 
+  class="modal-backdrop show"
+  (click)="onClose()"
+></div>
+
+<!-- Modal Dialog -->
+<div 
+  *ngIf="isVisible && task" 
+  class="modal show d-block" 
+  tabindex="-1" 
+  role="dialog"
+>
+  <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+    <div class="modal-content">
+      <!-- Modal Header -->
+      <div class="modal-header">
+        <h5 class="modal-title">
+          <i class="bi bi-info-circle me-2"></i>
+          Task Details
+        </h5>
+        <button 
+          type="button" 
+          class="btn-close" 
+          (click)="onClose()"
+          aria-label="Close"
+        ></button>
+      </div>
+
+      <!-- Modal Body -->
+      <div class="modal-body">
+        <div class="row">
+          <!-- Task Information -->
+          <div class="col-md-8">
+            <h4 class="task-title">{{ task.title }}</h4>
+            
+            <div class="task-meta mb-3">
+              <span [class]="'status-badge ' + getStatusClass(task.status)">
+                {{ getStatusText(task.status) }}
+              </span>
+            </div>
+
+            <div class="task-description">
+              <h6>Description</h6>
+              <p class="description-text">
+                {{ task.description || 'No description provided' }}
+              </p>
+            </div>
+          </div>
+
+          <!-- Task Metadata -->
+          <div class="col-md-4">
+            <div class="metadata-section">
+              <h6>Task Information</h6>
+              
+              <div class="info-item">
+                <label>Created:</label>
+                <span>{{ formatDate(task.createdAt || '') }}</span>
+              </div>
+
+              <div class="info-item" *ngIf="task.updatedAt && task.updatedAt !== task.createdAt">
+                <label>Last Updated:</label>
+                <span>{{ formatDate(task.updatedAt) }}</span>
+              </div>
+
+              <div class="info-item">
+                <label>Status:</label>
+                <span [class]="'status-badge ' + getStatusClass(task.status)">
+                  {{ getStatusText(task.status) }}
+                </span>
+              </div>
+
+              <div class="info-item" *ngIf="task.id">
+                <label>Task ID:</label>
+                <span class="task-id">{{ task.id }}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Modal Footer -->
+      <div class="modal-footer">
+        <button 
+          type="button" 
+          class="btn btn-secondary" 
+          (click)="onClose()"
+        >
+          Close
+        </button>
+        <button 
+          type="button" 
+          class="btn btn-primary"
+          (click)="onEdit()"
+        >
+          <i class="bi bi-pencil me-1"></i>
+          Edit Task
+        </button>
+        <button 
+          type="button" 
+          class="btn btn-danger"
+          (click)="onDelete()"
+        >
+          <i class="bi bi-trash me-1"></i>
+          Delete Task
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

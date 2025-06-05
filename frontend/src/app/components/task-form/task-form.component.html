@@ -1,0 +1,121 @@
+<!-- Modal Backdrop -->
+<div 
+  *ngIf="isVisible" 
+  class="modal-backdrop show"
+  (click)="onCancel()"
+></div>
+
+<!-- Modal Dialog -->
+<div 
+  *ngIf="isVisible" 
+  class="modal show d-block" 
+  tabindex="-1" 
+  role="dialog"
+>
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <!-- Modal Header -->
+      <div class="modal-header">
+        <h5 class="modal-title">
+          <i class="bi bi-{{ isEditMode ? 'pencil' : 'plus' }}-square me-2"></i>
+          {{ isEditMode ? 'Edit Task' : 'Create New Task' }}
+        </h5>
+        <button 
+          type="button" 
+          class="btn-close" 
+          (click)="onCancel()"
+          aria-label="Close"
+        ></button>
+      </div>
+
+      <!-- Modal Body -->
+      <div class="modal-body">
+        <form [formGroup]="taskForm" (ngSubmit)="onSubmit()" novalidate>
+          <!-- Title Field -->
+          <div class="mb-3">
+            <label for="title" class="form-label">
+              Title <span class="text-danger">*</span>
+            </label>
+            <input
+              type="text"
+              id="title"
+              class="form-control"
+              [class.is-invalid]="hasError('title')"
+              formControlName="title"
+              placeholder="Enter task title"
+              maxlength="100"
+            />
+            <div *ngIf="hasError('title')" class="invalid-feedback">
+              {{ getErrorMessage('title') }}
+            </div>
+            <div class="form-text">
+              {{ title?.value?.length || 0 }}/100 characters
+            </div>
+          </div>
+
+          <!-- Description Field -->
+          <div class="mb-3">
+            <label for="description" class="form-label">Description</label>
+            <textarea
+              id="description"
+              class="form-control"
+              [class.is-invalid]="hasError('description')"
+              formControlName="description"
+              placeholder="Enter task description (optional)"
+              rows="4"
+              maxlength="500"
+            ></textarea>
+            <div *ngIf="hasError('description')" class="invalid-feedback">
+              {{ getErrorMessage('description') }}
+            </div>
+            <div class="form-text">
+              {{ getDescriptionCharCount() }}/500 characters
+            </div>
+          </div>
+          <!-- Status Field -->
+          <div class="mb-4">
+            <label for="status" class="form-label">
+              Status <span class="text-danger">*</span>
+            </label>
+            <select
+              id="status"
+              class="form-select"
+              [class.is-invalid]="hasError('status')"
+              formControlName="status"
+            >
+              <option 
+                *ngFor="let option of statusOptions" 
+                [value]="option.value"
+              >
+                {{ option.label }}
+              </option>
+            </select>
+            <div *ngIf="hasError('status')" class="invalid-feedback">
+              {{ getErrorMessage('status') }}
+            </div>
+          </div>
+        </form>
+      </div>
+
+      <!-- Modal Footer -->
+      <div class="modal-footer">
+        <button 
+          type="button" 
+          class="btn btn-secondary" 
+          (click)="onCancel()"
+        >
+          Cancel
+        </button>
+        <button 
+          type="submit" 
+          class="btn btn-primary"
+          [disabled]="taskForm.invalid"
+          (click)="onSubmit()"
+        >
+          <i class="bi bi-{{ isEditMode ? 'check' : 'plus' }}-circle me-1"></i>
+          {{ isEditMode ? 'Update Task' : 'Create Task' }}
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
