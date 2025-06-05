@@ -1,0 +1,42 @@
+# .dockerignore
+# Ignore version control
+.git
+.gitignore
+
+# Ignore node_modules and build artifacts
+**/node_modules
+**/dist
+**/target
+**/.angular
+
+# Ignore IDE files
+**/.idea
+**/.vscode
+**/.DS_Store
+
+# Ignore logs
+**/*.log
+**/logs
+
+# Ignore temporary files
+**/tmp
+**/temp
+
+# Ignore documentation
+**/README.md
+**/HELP.md
+
+# Ignore old Docker files
+backend/Dockerfile
+backend/docker-compose.yml
+backend/mongo-init.js
+
+# Ignore environment files
+**/.env
+**/.env.local
+**/.env.prod
+
+# Ignore test files
+**/test
+**/*.test.js
+**/*.spec.js
