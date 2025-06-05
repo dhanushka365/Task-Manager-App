@@ -18,7 +18,7 @@ import java.util.List;
 @RequestMapping("/tasks")
 @Tag(name = "Tasks", description = "Task management APIs")
 @SecurityRequirement(name = "bearerAuth")
-@CrossOrigin(origins = "*")
+@CrossOrigin(origins = {"http://localhost:3000", "http://localhost:3001"})
 public class TaskController {
 
     @Autowired
