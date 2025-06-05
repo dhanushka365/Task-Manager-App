@@ -1,0 +1,24 @@
+.app {
+  min-height: 100vh;
+}
+
+/* Global app styles */
+* {
+  box-sizing: border-box;
+}
+
+/* Smooth transitions for route changes */
+router-outlet + * {
+  animation: routeAnimation 0.3s ease-in-out;
+}
+
+@keyframes routeAnimation {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
