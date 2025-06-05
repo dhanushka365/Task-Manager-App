@@ -1,32 +1,35 @@
 .modal {
   background: rgba(0, 0, 0, 0.5);
-  backdrop-filter: blur(5px);
 }
 
 .modal-content {
-  border-radius: 16px;
-  border: none;
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+  border-radius: 8px;
+  border: 1px solid #dee2e6;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
 
 .modal-header {
-  border-bottom: 2px solid #f8f9fa;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  color: white;
-  border-radius: 16px 16px 0 0;
+  border-bottom: 1px solid #dee2e6;
+  background: #f8f9fa;
+  color: #495057;
+  border-radius: 8px 8px 0 0;
 }
 
 .modal-title {
-  font-weight: 700;
+  font-weight: 600;
 }
 
 .btn-close {
-  filter: invert(1);
+  opacity: 0.7;
+}
+
+.btn-close:hover {
+  opacity: 1;
 }
 
 .task-title {
   color: #2d3748;
-  font-weight: 700;
+  font-weight: 600;
   margin-bottom: 1rem;
 }
 
@@ -36,9 +39,9 @@
 
 .status-badge {
   padding: 6px 12px;
-  border-radius: 20px;
+  border-radius: 4px;
   font-size: 11px;
-  font-weight: 700;
+  font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.5px;
 }
@@ -46,21 +49,24 @@
 .status-todo {
   background: #fff3cd;
   color: #856404;
+  border: 1px solid #ffeaa7;
 }
 
 .status-in-progress {
-  background: #cce7ff;
-  color: #004085;
+  background: #d1ecf1;
+  color: #0c5460;
+  border: 1px solid #bee5eb;
 }
 
 .status-done {
   background: #d4edda;
   color: #155724;
+  border: 1px solid #c3e6cb;
 }
 
 .task-description h6 {
   color: #495057;
-  font-weight: 600;
+  font-weight: 500;
   margin-bottom: 0.5rem;
 }
 
