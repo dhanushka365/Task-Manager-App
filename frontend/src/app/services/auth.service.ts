@@ -165,7 +165,23 @@ export class AuthService {
       errorMessage = error.error.message;
     } else {
       // Server-side error
+      console.log('Error details:', error); // For debugging
+      
       switch (error.status) {
+        case 400:
+          // Handle bad request - usually validation errors or user already exists
+          if (error.error && typeof error.error === 'string') {
+            if (error.error.toLowerCase().includes('username already exists')) {
+              errorMessage = 'Username already exists';
+            } else if (error.error.toLowerCase().includes('error:')) {
+              errorMessage = error.error.replace('Error: ', '');
+            } else {
+              errorMessage = error.error;
+            }
+          } else {
+            errorMessage = 'Invalid request. Please check your input.';
+          }
+          break;
         case 401:
           errorMessage = 'Invalid username or password';
           break;
@@ -176,7 +192,7 @@ export class AuthService {
           errorMessage = 'Service not found';
           break;
         case 500:
-          errorMessage = 'Internal server error';
+          errorMessage = 'Internal server error. Please try again later.';
           break;
         default:
           if (error.error && typeof error.error === 'string') {

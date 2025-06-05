@@ -60,6 +60,7 @@ export class RegisterComponent implements OnInit {
     if (this.registerForm.valid) {
       this.isLoading = true;
       this.errorMessage = '';
+      this.successMessage = '';
       
       const registerData = {
         username: this.registerForm.value.username,
@@ -69,18 +70,43 @@ export class RegisterComponent implements OnInit {
       this.authService.register(registerData).subscribe({
         next: (response) => {
           this.isLoading = false;
-          this.successMessage = 'Registration successful! Please login with your credentials.';
-          setTimeout(() => {
-            this.router.navigate(['/login']);
-          }, 2000);
+          this.successMessage = `Account created successfully for "${registerData.username}"! Redirecting to login...`;
+          
+          // Auto-redirect after 3 seconds with countdown
+          let countdown = 3;
+          const interval = setInterval(() => {
+            countdown--;
+            if (countdown > 0) {
+              this.successMessage = `Account created successfully for "${registerData.username}"! Redirecting to login in ${countdown} seconds...`;
+            } else {
+              clearInterval(interval);
+              this.router.navigate(['/login'], { 
+                queryParams: { username: registerData.username } 
+              });
+            }
+          }, 1000);
         },
         error: (error) => {
           this.isLoading = false;
-          this.errorMessage = error.message || 'Registration failed. Please try again.';
+          
+          // Handle specific error messages
+          const errorMsg = error.message || 'Registration failed. Please try again.';
+          
+          if (errorMsg.toLowerCase().includes('username already exists') || 
+              errorMsg.toLowerCase().includes('already exists')) {
+            this.errorMessage = `Username "${registerData.username}" is already taken. Please choose a different username.`;
+          } else if (errorMsg.toLowerCase().includes('username')) {
+            this.errorMessage = 'Invalid username format. Please check your username and try again.';
+          } else if (errorMsg.toLowerCase().includes('password')) {
+            this.errorMessage = 'Password does not meet requirements. Please check your password and try again.';
+          } else {
+            this.errorMessage = errorMsg;
+          }
         }
       });
     } else {
       this.markFormGroupTouched();
+      this.errorMessage = 'Please fill in all required fields correctly.';
     }
   }
 
