@@ -71,16 +71,21 @@ export class RegisterComponent implements OnInit {
         next: (response) => {
           this.isLoading = false;
           console.log('Registration successful:', response);
+          console.log('Response type:', typeof response);
+          console.log('Response keys:', response ? Object.keys(response) : 'null');
           
           // Handle the new JSON response format
           let message = 'Account created successfully!';
           let username = registerData.username;
           
-          if (response && response.message) {
-            message = response.message;
-          }
-          if (response && response.username) {
-            username = response.username;
+          // Check if response is valid and has expected properties
+          if (response && typeof response === 'object') {
+            if (response.message && typeof response.message === 'string') {
+              message = response.message;
+            }
+            if (response.username && typeof response.username === 'string') {
+              username = response.username;
+            }
           }
           
           this.successMessage = `${message} for "${username}"! Redirecting to login...`;
@@ -102,38 +107,69 @@ export class RegisterComponent implements OnInit {
         error: (error) => {
           this.isLoading = false;
           console.log('Registration error:', error);
+          console.log('Error status:', error.status);
+          console.log('Error error:', error.error);
+          console.log('Full error object:', JSON.stringify(error, null, 2));
           
-          // Handle structured validation errors from backend
-          if (error.error && error.error.errors) {
-            // Backend validation errors - structured response
-            const validationErrors = error.error.errors;
-            const errorMessages = [];
-            
-            if (validationErrors.username) {
-              errorMessages.push(`Username: ${validationErrors.username}`);
+          // Handle errors directly here
+          let errorMsg = 'Registration failed. Please try again.';
+          
+          // Check if it's an HTTP error response
+          if (error.status !== undefined) {
+            switch (error.status) {
+              case 400:
+                if (error.error) {
+                  if (typeof error.error === 'string') {
+                    if (error.error.toLowerCase().includes('username already exists')) {
+                      errorMsg = `Username "${registerData.username}" is already taken. Please choose a different username.`;
+                    } else {
+                      errorMsg = error.error.replace('Error: ', '');
+                    }
+                  } else if (error.error.message) {
+                    errorMsg = error.error.message;
+                  } else if (Array.isArray(error.error) && error.error.length > 0) {
+                    // Handle array response like ["Error: Username already exists"]
+                    errorMsg = error.error[0].replace('Error: ', '');
+                    if (errorMsg.toLowerCase().includes('username already exists')) {
+                      errorMsg = `Username "${registerData.username}" is already taken. Please choose a different username.`;
+                    }
+                  } else {
+                    errorMsg = 'Invalid request. Please check your input.';
+                  }
+                } else {
+                  errorMsg = 'Invalid request. Please check your input.';
+                }
+                break;
+              case 500:
+                errorMsg = 'Internal server error. Please try again later.';
+                break;
+              default:
+                if (error.error) {
+                  if (typeof error.error === 'string') {
+                    errorMsg = error.error;
+                  } else if (error.error.message) {
+                    errorMsg = error.error.message;
+                  } else if (Array.isArray(error.error) && error.error.length > 0) {
+                    errorMsg = error.error[0];
+                  } else {
+                    errorMsg = `Request failed with status ${error.status}`;
+                  }
+                } else if (error.message) {
+                  errorMsg = error.message;
+                } else {
+                  errorMsg = `Request failed with status ${error.status}`;
+                }
             }
-            if (validationErrors.password) {
-              errorMessages.push(`Password: ${validationErrors.password}`);
-            }
-            
-            this.errorMessage = errorMessages.length > 0 
-              ? errorMessages.join('. ') 
-              : 'Validation failed. Please check your input.';
+          } else if (error.message) {
+            errorMsg = error.message;
+          } else if (typeof error === 'string') {
+            errorMsg = error;
           } else {
-            // Simple error message from backend
-            const errorMsg = error.error || error.message || 'Registration failed. Please try again.';
-            
-            if (typeof errorMsg === 'string') {
-              if (errorMsg.toLowerCase().includes('username already exists') || 
-                  errorMsg.toLowerCase().includes('already exists')) {
-                this.errorMessage = `Username "${registerData.username}" is already taken. Please choose a different username.`;
-              } else {
-                this.errorMessage = errorMsg;
-              }
-            } else {
-              this.errorMessage = 'Registration failed. Please try again.';
-            }
+            // If it's still an object, convert to string for debugging
+            errorMsg = `Unexpected error occurred. Please try again.`;
           }
+          
+          this.errorMessage = errorMsg;
         }
       });
     } else {

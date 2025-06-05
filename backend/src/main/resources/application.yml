@@ -1,0 +1,85 @@
+spring:
+  application:
+    name: task-manager-backend
+  
+  # MongoDB Configuration
+  data:
+    mongodb:
+      uri: mongodb://localhost:27017/taskmanager
+      database: taskmanager
+  
+  # Jackson Configuration for date serialization
+  jackson:
+    serialization:
+      write-dates-as-timestamps: false
+    date-format: yyyy-MM-dd'T'HH:mm:ss
+    time-zone: UTC
+  
+  # JPA Configuration (if needed for future use)
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: false
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQL8Dialect
+        format_sql: true
+
+# Server Configuration
+server:
+  port: 8081
+  servlet:
+    context-path: /api
+
+# JWT Configuration
+jwt:
+  secret: mySecretKey123456789012345678901234567890
+  expiration: 86400 # 24 hours in seconds
+
+# Logging Configuration
+logging:
+  level:
+    com.taskmanager.backend: DEBUG
+    org.springframework.security: DEBUG
+    org.springframework.web: DEBUG
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss} - %msg%n"
+    file: "%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n"
+
+# Management/Actuator Configuration
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics
+  endpoint:
+    health:
+      show-details: always
+
+# CORS Configuration (additional to code-based config)
+cors:
+  allowed-origins: "http://localhost:3000,http://localhost:3001,http://localhost:4200,http://localhost:8080"
+  allowed-methods: "GET,POST,PUT,DELETE,OPTIONS"
+  allowed-headers: "*"
+  allow-credentials: true
+
+# Application Configuration
+app:
+  name: Task Manager Application
+  version: 1.0.0
+  description: A full-stack task management application
+
+# SpringDoc/OpenAPI Configuration
+springdoc:
+  api-docs:
+    path: /v3/api-docs
+    enabled: true
+  swagger-ui:
+    enabled: true
+    path: /swagger-ui.html
+    try-it-out-enabled: true
+    operations-sorter: method
+    tags-sorter: alpha
+    default-models-expand-depth: 1
+    default-model-expand-depth: 1
+  show-actuator: true

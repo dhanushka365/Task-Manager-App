@@ -2,7 +2,7 @@ import { Injectable, Inject, PLATFORM_ID } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 import { HttpClient, HttpHeaders, HttpErrorResponse } from '@angular/common/http';
 import { BehaviorSubject, Observable, throwError } from 'rxjs';
-import { catchError, tap } from 'rxjs/operators';
+import { catchError, tap, map } from 'rxjs/operators';
 
 export interface User {
   username: string;
@@ -23,6 +23,12 @@ export interface RegisterRequest {
   username: string;
   password: string;
   email?: string;
+}
+
+export interface RegisterResponse {
+  message: string;
+  username: string;
+  success: boolean;
 }
 
 @Injectable({
@@ -63,10 +69,11 @@ export class AuthService {
    * Register new user
    */
   register(userData: RegisterRequest): Observable<any> {
-    return this.http.post(`${this.apiUrl}/register`, userData)
-      .pipe(
-        catchError(this.handleError)
-      );
+    return this.http.post(`${this.apiUrl}/register`, userData, {
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    });
   }
 
   /**
@@ -160,20 +167,18 @@ export class AuthService {
   private handleError(error: HttpErrorResponse) {
     let errorMessage = 'An error occurred';
     
+    // Don't treat successful responses as errors
+    if (error.status >= 200 && error.status < 300) {
+      return throwError(() => new Error('This should not be an error'));
+    }
+    
     if (error.error instanceof ErrorEvent) {
       // Client-side error
       errorMessage = error.error.message;
     } else {
       // Server-side error
-      console.log('Error details:', error); // For debugging
-      
       switch (error.status) {
-        case 200:
-          // This should not be an error, but if it gets here, something is wrong
-          console.warn('HTTP 200 treated as error:', error);
-          return throwError(() => new Error('Unexpected success response handling'));
         case 400:
-          // Handle bad request - usually validation errors or user already exists
           if (error.error && typeof error.error === 'string') {
             if (error.error.toLowerCase().includes('username already exists')) {
               errorMessage = 'Username already exists';

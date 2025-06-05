@@ -3,6 +3,7 @@ package com.taskmanager.backend.controller;
 import com.taskmanager.backend.dto.request.JwtRequest;
 import com.taskmanager.backend.dto.request.UserDto;
 import com.taskmanager.backend.dto.response.JwtResponse;
+import com.taskmanager.backend.dto.response.RegistrationResponse;
 import com.taskmanager.backend.entity.User;
 import com.taskmanager.backend.service.JwtUserDetailsService;
 import com.taskmanager.backend.service.UserService;
@@ -18,29 +19,6 @@ import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
-
-// Inner class for registration response
-class RegistrationResponse {
-    private String message;
-    private String username;
-    private boolean success;
-    
-    public RegistrationResponse(String message, String username, boolean success) {
-        this.message = message;
-        this.username = username;
-        this.success = success;
-    }
-    
-    // Getters
-    public String getMessage() { return message; }
-    public String getUsername() { return username; }
-    public boolean isSuccess() { return success; }
-    
-    // Setters
-    public void setMessage(String message) { this.message = message; }
-    public void setUsername(String username) { this.username = username; }
-    public void setSuccess(boolean success) { this.success = success; }
-}
 
 @RestController
 @RequestMapping("/auth")
@@ -80,26 +58,42 @@ public class AuthController {
 
     @PostMapping("/register")
     @Operation(summary = "Register user", description = "Register a new user")
-    public ResponseEntity<?> register(@Valid @RequestBody UserDto userDto) {
+    public ResponseEntity<RegistrationResponse> register(@Valid @RequestBody UserDto userDto) {
         try {
             System.out.println("Registration request received for username: " + userDto.getUsername());
             User user = userService.registerUser(userDto);
             System.out.println("User registered successfully: " + user.getUsername());
             
-            // Return JSON response instead of plain text
-            return ResponseEntity.ok(new RegistrationResponse(
+            // Create response object
+            RegistrationResponse response = new RegistrationResponse(
                 "User registered successfully", 
                 user.getUsername(), 
                 true
-            ));
+            );
+            
+            System.out.println("Sending response: " + response.getMessage());
+            return ResponseEntity.ok(response);
         } catch (RuntimeException e) {
             System.err.println("Registration error: " + e.getMessage());
             e.printStackTrace();
-            return ResponseEntity.badRequest().body("Error: " + e.getMessage());
+            
+            // For errors, we'll return a different response
+            RegistrationResponse errorResponse = new RegistrationResponse(
+                e.getMessage(), 
+                userDto.getUsername(), 
+                false
+            );
+            return ResponseEntity.badRequest().body(errorResponse);
         } catch (Exception e) {
             System.err.println("Unexpected error during registration: " + e.getMessage());
             e.printStackTrace();
-            return ResponseEntity.status(500).body("Internal server error");
+            
+            RegistrationResponse errorResponse = new RegistrationResponse(
+                "Internal server error", 
+                userDto.getUsername(), 
+                false
+            );
+            return ResponseEntity.status(500).body(errorResponse);
         }
     }
 
