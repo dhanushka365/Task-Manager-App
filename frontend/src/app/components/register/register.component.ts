@@ -70,18 +70,31 @@ export class RegisterComponent implements OnInit {
       this.authService.register(registerData).subscribe({
         next: (response) => {
           this.isLoading = false;
-          this.successMessage = `Account created successfully for "${registerData.username}"! Redirecting to login...`;
+          console.log('Registration successful:', response);
+          
+          // Handle the new JSON response format
+          let message = 'Account created successfully!';
+          let username = registerData.username;
+          
+          if (response && response.message) {
+            message = response.message;
+          }
+          if (response && response.username) {
+            username = response.username;
+          }
+          
+          this.successMessage = `${message} for "${username}"! Redirecting to login...`;
           
           // Auto-redirect after 3 seconds with countdown
           let countdown = 3;
           const interval = setInterval(() => {
             countdown--;
             if (countdown > 0) {
-              this.successMessage = `Account created successfully for "${registerData.username}"! Redirecting to login in ${countdown} seconds...`;
+              this.successMessage = `${message} for "${username}"! Redirecting to login in ${countdown} seconds...`;
             } else {
               clearInterval(interval);
               this.router.navigate(['/login'], { 
-                queryParams: { username: registerData.username } 
+                queryParams: { username: username } 
               });
             }
           }, 1000);

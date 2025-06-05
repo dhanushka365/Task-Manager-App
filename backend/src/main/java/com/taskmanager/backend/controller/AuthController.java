@@ -19,6 +19,29 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
+// Inner class for registration response
+class RegistrationResponse {
+    private String message;
+    private String username;
+    private boolean success;
+    
+    public RegistrationResponse(String message, String username, boolean success) {
+        this.message = message;
+        this.username = username;
+        this.success = success;
+    }
+    
+    // Getters
+    public String getMessage() { return message; }
+    public String getUsername() { return username; }
+    public boolean isSuccess() { return success; }
+    
+    // Setters
+    public void setMessage(String message) { this.message = message; }
+    public void setUsername(String username) { this.username = username; }
+    public void setSuccess(boolean success) { this.success = success; }
+}
+
 @RestController
 @RequestMapping("/auth")
 @Tag(name = "Authentication", description = "Authentication management APIs")
@@ -62,7 +85,13 @@ public class AuthController {
             System.out.println("Registration request received for username: " + userDto.getUsername());
             User user = userService.registerUser(userDto);
             System.out.println("User registered successfully: " + user.getUsername());
-            return ResponseEntity.ok("User registered successfully");
+            
+            // Return JSON response instead of plain text
+            return ResponseEntity.ok(new RegistrationResponse(
+                "User registered successfully", 
+                user.getUsername(), 
+                true
+            ));
         } catch (RuntimeException e) {
             System.err.println("Registration error: " + e.getMessage());
             e.printStackTrace();

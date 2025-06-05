@@ -168,6 +168,10 @@ export class AuthService {
       console.log('Error details:', error); // For debugging
       
       switch (error.status) {
+        case 200:
+          // This should not be an error, but if it gets here, something is wrong
+          console.warn('HTTP 200 treated as error:', error);
+          return throwError(() => new Error('Unexpected success response handling'));
         case 400:
           // Handle bad request - usually validation errors or user already exists
           if (error.error && typeof error.error === 'string') {
