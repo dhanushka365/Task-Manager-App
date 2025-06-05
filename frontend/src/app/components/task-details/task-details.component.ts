@@ -23,7 +23,7 @@ export class TaskDetailsComponent {
   }
 
   onDelete(): void {
-    if (this.task && confirm('Are you sure you want to delete this task?')) {
+    if (this.task) {
       this.deleteTask.emit(this.task.id!);
     }
   }
@@ -58,15 +58,23 @@ export class TaskDetailsComponent {
     }
   }
 
-  formatDate(dateString: string): string {
+  formatDate(dateString: string | Date | undefined): string {
     if (!dateString) return 'Not set';
-    const date = new Date(dateString);
-    return date.toLocaleDateString('en-US', {
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit'
-    });
+    
+    try {
+      const date = new Date(dateString);
+      if (isNaN(date.getTime())) return 'Invalid Date';
+      
+      return date.toLocaleDateString('en-US', {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit'
+      });
+    } catch (error) {
+      console.error('Error formatting date:', error);
+      return 'Invalid Date';
+    }
   }
 }

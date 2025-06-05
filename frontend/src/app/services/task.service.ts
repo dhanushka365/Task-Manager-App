@@ -18,8 +18,8 @@ export interface TaskDto {
   title: string;
   description?: string;
   status: string;
-  createdAt?: string;
-  updatedAt?: string;
+  createdAt?: string | Date;
+  updatedAt?: string | Date;
 }
 
 @Injectable({

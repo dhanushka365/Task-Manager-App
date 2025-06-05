@@ -3,7 +3,6 @@
   <app-navbar 
     [currentUser]="currentUser"
     (logout)="onLogout()"
-    (createTask)="onCreateTask()"
   ></app-navbar>
 
   <!-- Main Content -->
@@ -158,4 +157,13 @@
     (deleteTask)="onTaskDetailsDelete($event)"
     (closeDetails)="closeTaskDetails()"
   ></app-task-details>
+
+  <!-- Delete Task Modal -->
+  <app-delete-task-modal
+    [task]="taskForDelete"
+    [isVisible]="showDeleteModal"
+    [isDeleting]="isDeleting"
+    (delete)="onConfirmDelete()"
+    (close)="closeDeleteModal()"
+  ></app-delete-task-modal>
 </div>

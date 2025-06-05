@@ -1,0 +1,88 @@
+<!-- Modal Backdrop -->
+<div 
+  *ngIf="isVisible" 
+  class="modal-backdrop show"
+  (click)="onClose()"
+></div>
+
+<!-- Modal Dialog -->
+<div 
+  *ngIf="isVisible && task" 
+  class="modal show d-block" 
+  tabindex="-1" 
+  role="dialog"
+>
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <!-- Modal Header -->
+      <div class="modal-header bg-danger text-white">
+        <h5 class="modal-title">
+          <i class="bi bi-exclamation-triangle me-2"></i>
+          Confirm Delete
+        </h5>
+        <button 
+          type="button" 
+          class="btn-close btn-close-white" 
+          (click)="onClose()"
+          [disabled]="isDeleting"
+          aria-label="Close"
+        ></button>
+      </div>
+
+      <!-- Modal Body -->
+      <div class="modal-body">
+        <div class="alert alert-warning" role="alert">
+          <i class="bi bi-exclamation-triangle-fill me-2"></i>
+          <strong>Warning!</strong> This action cannot be undone.
+        </div>
+
+        <p class="mb-3">Are you sure you want to delete the following task?</p>
+        
+        <div class="task-preview">
+          <div class="card bg-light">
+            <div class="card-body">
+              <h6 class="card-title">
+                <i class="bi bi-clipboard-check me-2"></i>
+                {{ task.title }}
+              </h6>
+              
+              <p class="card-text text-muted small mb-2">
+                {{ task.description || 'No description' }}
+              </p>
+              
+              <div class="d-flex justify-content-between align-items-center">
+                <span class="badge bg-secondary">{{ task.status || 'TO_DO' }}</span>
+                <small class="text-muted">
+                  Created: {{ formatDate(task.createdAt) }}
+                </small>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Modal Footer -->
+      <div class="modal-footer">
+        <button 
+          type="button" 
+          class="btn btn-secondary" 
+          (click)="onClose()"
+          [disabled]="isDeleting"
+        >
+          <i class="bi bi-x-circle me-1"></i>
+          Cancel
+        </button>
+        <button 
+          type="button" 
+          class="btn btn-danger"
+          (click)="onDelete()"
+          [disabled]="isDeleting"
+        >
+          <span *ngIf="isDeleting" class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+          <i *ngIf="!isDeleting" class="bi bi-trash me-1"></i>
+          {{ isDeleting ? 'Deleting...' : 'Delete Task' }}
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

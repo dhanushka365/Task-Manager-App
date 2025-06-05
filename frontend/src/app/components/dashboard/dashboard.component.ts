@@ -6,6 +6,7 @@ import { TaskService, TaskDto } from '../../services/task.service';
 import { TaskListComponent } from '../task-list/task-list.component';
 import { TaskFormComponent } from '../task-form/task-form.component';
 import { TaskDetailsComponent } from '../task-details/task-details.component';
+import { DeleteTaskModalComponent } from '../delete-task-modal/delete-task-modal.component';
 import { NavbarComponent } from '../navbar/navbar.component';
 
 @Component({
@@ -17,6 +18,7 @@ import { NavbarComponent } from '../navbar/navbar.component';
     TaskListComponent, 
     TaskFormComponent,
     TaskDetailsComponent,
+    DeleteTaskModalComponent,
     NavbarComponent
   ],
   templateUrl: './dashboard.component.html',
@@ -31,7 +33,10 @@ export class DashboardComponent implements OnInit {
   selectedTask: TaskDto | null = null;
   showTaskForm = false;
   showTaskDetails = false;
+  showDeleteModal = false;
   taskForDetails: TaskDto | null = null;
+  taskForDelete: TaskDto | null = null;
+  isDeleting = false;
   currentFilter = 'ALL';
   currentUser = '';
 
@@ -57,6 +62,7 @@ export class DashboardComponent implements OnInit {
     
     this.taskService.getAllTasks().subscribe({
       next: (tasks) => {
+        console.log('Received tasks:', tasks);
         this.tasks = tasks;
         this.applyFilter(this.currentFilter);
         this.calculateStatistics();
@@ -114,19 +120,36 @@ export class DashboardComponent implements OnInit {
   }
 
   onDeleteTask(taskId: string): void {
-    if (confirm('Are you sure you want to delete this task?')) {
-      this.taskService.deleteTask(taskId).subscribe({
+    const task = this.tasks.find(t => t.id === taskId);
+    if (task) {
+      this.taskForDelete = task;
+      this.showDeleteModal = true;
+    }
+  }
+
+  onConfirmDelete(): void {
+    if (this.taskForDelete && this.taskForDelete.id) {
+      this.isDeleting = true;
+      this.taskService.deleteTask(this.taskForDelete.id).subscribe({
         next: () => {
           this.successMessage = 'Task deleted successfully';
           this.loadTasks();
+          this.closeDeleteModal();
           setTimeout(() => this.successMessage = '', 3000);
         },
         error: (error) => {
           this.errorMessage = error.message || 'Failed to delete task';
+          this.isDeleting = false;
           setTimeout(() => this.errorMessage = '', 5000);
         }
       });
     }
+  }
+
+  closeDeleteModal(): void {
+    this.showDeleteModal = false;
+    this.taskForDelete = null;
+    this.isDeleting = false;
   }
 
   onTaskFormSubmit(taskData: Partial<TaskDto>): void {
